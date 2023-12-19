@@ -1,7 +1,2 @@
-library mobi_bt_iot;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export '../bluetooth/bluetooth_helper.dart';
+export '../iot/ScooterCommandUtil.dart';
