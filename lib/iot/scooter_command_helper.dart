@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:mobi_bt_iot/iot/comand.dart';
 import 'package:mobi_bt_iot/iot/CrcUtil.dart';
+import 'package:mobi_bt_iot/iot/comand.dart';
 import 'package:mobi_bt_iot/iot/iot_scooter_interface.dart';
-
 
 // class ScooterCommandHelper implements IotScooterInterface {
 //   static const String tag = 'ScooterCommandHelper';
@@ -196,151 +195,151 @@ class ScooterCommandHelper implements IotScooterInterface {
 
   ScooterCommandHelper._internal();
 
-  final StreamController<List<int>> _scooterCommandStreamController =
-  StreamController<List<int>>.broadcast();
+  final StreamController<List<int>> _scooterCommandStreamController = StreamController<List<int>>.broadcast();
 
-  Stream<List<int>> get scooterCommandStream =>
-      _scooterCommandStreamController.stream;
+  Stream<List<int>> get scooterCommandStream => _scooterCommandStreamController.stream;
 
-  List<int> getCommand() {
+  @override
+  List<int> getCommand({required int ckey, required int commandType, required List<int> data}) {
     List<int> head = [0xA3, 0xA4].map((val) => val.toSigned(8)).toList();
     int len = data.length;
     int rand = Random().nextInt(256) - 127;
-    List<int> command = addBytes(head, [
+    List<int> command = addBytes(a: head, b: [
       len,
       rand,
       ckey,
       commandType,
     ]);
-    return addBytes(command, data);
+    return addBytes(a: command, b: data);
   }
 
-  List<int> getCRCCommunicationKey(String deviceKey) {
+  @override
+  List<int> getCRCCommunicationKey({required String deviceKey}) {
     List<int> data = List.filled(8, 0);
     for (int i = 0; i < deviceKey.length; i++) {
       data[i] = deviceKey.codeUnitAt(i);
     }
     List<int> command = getCommand(
-      0,
-      CommandType.communicationKey,
-      data,
+      ckey: 0,
+      commandType: CommandType.communicationKey,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
-  List<int> getCRCScooterOpen(
-      int ckey,
-      int uid,
-      int timestamp,
-      ) {
+  @override
+  List<int> getCRCScooterOpen({
+    required int ckey,
+    required int uid,
+    required int timestamp,
+  }) {
     List<int> data = [0x01];
-    data = addBytes(data, intToBytes(uid));
-    data = addBytes(data, intToBytes(timestamp));
-    data = addBytes(data, [0x0]);
+    data = addBytes(a: data, b: intToBytes(number: uid));
+    data = addBytes(a: data, b: intToBytes(number: timestamp));
+    data = addBytes(a: data, b: [0x0]);
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterOpen,
-      data,
+      ckey: 0,
+      commandType: CommandType.communicationKey,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
-  List<int> getCRCScooterOpenResponse(
-      int ckey,
-      ) {
+  @override
+  List<int> getCRCScooterOpenResponse({required int ckey}) {
     List<int> data = [0x02];
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterOpen,
-      data,
+      ckey: ckey,
+      commandType: CommandType.scooterOpen,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCScooterClose(int ckey) {
+  List<int> getCRCScooterClose({required int ckey}) {
     List<int> data = [0x01];
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterClose,
-      data,
+      ckey: ckey,
+      commandType: CommandType.scooterClose,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCScooterCloseResponse(int ckey) {
+  List<int> getCRCScooterCloseResponse({required int ckey}) {
     List<int> data = [0x02];
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterClose,
-      data,
+      ckey: ckey,
+      commandType: CommandType.scooterClose,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCShutDown(int cKey, int opt) {
+  List<int> getCRCShutDown({required int cKey, required int opt}) {
     List<int> data = [0, opt];
     List<int> command = getCommand(
-      cKey,
-      CommandType.config,
-      data,
+      ckey: cKey,
+      commandType: CommandType.config,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCScooterIotInfo(int ckey) {
+  List<int> getCRCScooterIotInfo({required int ckey}) {
     List<int> data = [0x01];
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterIotInfo,
-      data,
+      ckey: ckey,
+      commandType: CommandType.scooterIotInfo,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCScooterInfo(int ckey) {
+  List<int> getCRCScooterInfo({required int ckey}) {
     List<int> data = [0x01];
     List<int> command = getCommand(
-      ckey,
-      CommandType.scooterInfo,
-      data,
+      ckey: ckey,
+      commandType: CommandType.scooterInfo,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCGetOldData(int cKey) {
+  List<int> getCRCGetOldData({required int cKey}) {
     List<int> data = [0x01];
     List<int> command = getCommand(
-      cKey,
-      CommandType.oldData,
-      data,
+      ckey: cKey,
+      commandType: CommandType.oldData,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> getCRCClearOldData(int cKey) {
+  List<int> getCRCClearOldData({required int cKey}) {
     List<int> data = [0x01];
     List<int> command = getCommand(
-      cKey,
-      CommandType.clearData,
-      data,
+      ckey: cKey,
+      commandType: CommandType.clearData,
+      data: data,
     );
-    return getXorCRCCommand(command);
+    return getXorCRCCommand(command: command);
   }
 
   @override
-  List<int> addBytes(List<int> a, List<int> b) {
+  List<int> addBytes({required List<int> a, required List<int> b}) {
     return [...a, ...b];
   }
 
   @override
-  List<int> intToBytes(int number) {
+  List<int> intToBytes({required int number}) {
     return [
       (number >> 24) & 0xFF,
       (number >> 16) & 0xFF,
@@ -350,14 +349,14 @@ class ScooterCommandHelper implements IotScooterInterface {
   }
 
   @override
-  List<int> getXorCRCCommand(List<int> command) {
-    List<int> xorCommand = encode(command);
-    List<int> crcOrder = crcByte(xorCommand);
+  List<int> getXorCRCCommand({required List<int> command}) {
+    List<int> xorCommand = encode(command: command);
+    List<int> crcOrder = crcByte(ori: xorCommand);
     return crcOrder;
   }
 
   @override
-  List<int> encode(List<int> command) {
+  List<int> encode({required List<int> command}) {
     List<int> xorComm = List<int>.filled(command.length, 0);
 
     xorComm[0] = command[0];
@@ -372,7 +371,7 @@ class ScooterCommandHelper implements IotScooterInterface {
   }
 
   @override
-  List<int> crcByte(List<int> ori) {
+  List<int> crcByte({required List<int> ori}) {
     int crc8 = CRCUtil.calcCRC8(Uint8List.fromList(ori));
     List<int> ret = List<int>.from(ori)..add(crc8 & 0xFF);
     return ret;
