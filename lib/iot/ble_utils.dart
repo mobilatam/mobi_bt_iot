@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'CrcUtil.dart';
 
-Future<Uint8List?> processReceivedValues(List<int> values) async {
+Future<Uint8List?> processReceivedValues({required List<int> values}) async {
   int start = 0;
   int copyLen = 0;
 
@@ -41,45 +41,44 @@ Future<void> onHandNotifyCommand({required Uint8List command}) async {
 
   switch (command[5]) {
     case communicationKeyCommand:
-      await handCommunicationKey(command);
+      await handCommunicationKey(command: command);
       break;
     case errorCommand:
-      await handCommandError(command);
+      await handCommandError(command: command);
       break;
     default:
-      await handCommandError(command);
+      await handCommandError(command: command);
       break;
   }
 }
 
-Future<void> handCommandError(Uint8List command) async {
+Future<void> handCommandError({required Uint8List command}) async {
   int status = command[6];
-  await callbackCommandError(status);
+  await callbackCommandError(status: status);
 }
 
-Future<void> callbackCommandError(int status) async {}
+Future<void> callbackCommandError({required int status}) async {}
 
-Future<void> handCommunicationKey(Uint8List command) async {
+Future<void> handCommunicationKey({required Uint8List command}) async {
   int flag = command[6];
   if (flag == 1) {
     int mBLECommunicationKey = command[7];
-    await callbackCommunicationKey(mBLECommunicationKey);
+    await callbackCommunicationKey(mBLECommunicationKey: mBLECommunicationKey);
   } else {
     await callbackCommunicationKeyError();
   }
 }
 
-Future<void> callbackCommunicationKey(int mBLECommunicationKey) async {
+Future<void> callbackCommunicationKey({required int mBLECommunicationKey}) async {
   DeviceConfig().setKey(mBLECommunicationKey);
 }
 
 Future<void> callbackCommunicationKeyError() async {}
 
-List<String> convertToHexWithPrefixUppercase(List<int> numbers) {
+List<String> convertToHexWithPrefixUppercase({required List<int> numbers}) {
   return numbers
       .map(
-        (number) =>
-    '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',
-  )
+        (number) => '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',
+      )
       .toList();
 }
