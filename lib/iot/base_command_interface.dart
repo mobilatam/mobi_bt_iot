@@ -8,5 +8,4 @@ abstract class BaseCommandInterface {
   List<int> encode(List<int> command);
   List<int> crcByte(List<int> ori);
   List<int> crcByte2(List<int> ori);
-  ///todo: implementar base_command
 }
