@@ -4,13 +4,13 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 import '../bluetooth/bluetooth_helper.dart';
 import 'CrcUtil.dart';
-import 'ScooterCommandUtil.dart';
+import 'scooter_command_helper.dart';
 
 class DeviceKeyManager {
   DeviceKeyManager({
     required this.bluetoothHelper,
   });
-
+  ScooterCommandHelper scooterCommandUtil = ScooterCommandHelper();
   final BluetoothHelper bluetoothHelper;
 
   int mBLECommunicationKey = 0;
@@ -23,31 +23,21 @@ class DeviceKeyManager {
 
     List<BluetoothService> services = await connectedDevice.discoverServices();
     BluetoothService service = services.firstWhere(
-      (s) =>
-          s.uuid.toString().toUpperCase() ==
-          '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
+      (s) => s.uuid.toString().toUpperCase() == '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
       orElse: () => throw Exception('Servicio no encontrado.'),
     );
 
-    BluetoothCharacteristic notifyCharacteristic =
-        service.characteristics.firstWhere(
-      (c) =>
-          c.uuid.toString().toUpperCase() ==
-          '6E400003-B5A3-F393-E0A9-E50E24DCCA9E',
-      orElse: () =>
-          throw Exception('Característica de notificación no encontrada.'),
+    BluetoothCharacteristic notifyCharacteristic = service.characteristics.firstWhere(
+      (c) => c.uuid.toString().toUpperCase() == '6E400003-B5A3-F393-E0A9-E50E24DCCA9E',
+      orElse: () => throw Exception('Característica de notificación no encontrada.'),
     );
 
-    BluetoothCharacteristic writeCharacteristic =
-        service.characteristics.firstWhere(
-      (c) =>
-          c.uuid.toString().toUpperCase() ==
-          '6E400002-B5A3-F393-E0A9-E50E24DCCA9E',
-      orElse: () =>
-          throw Exception('Característica de escritura no encontrada.'),
+    BluetoothCharacteristic writeCharacteristic = service.characteristics.firstWhere(
+      (c) => c.uuid.toString().toUpperCase() == '6E400002-B5A3-F393-E0A9-E50E24DCCA9E',
+      orElse: () => throw Exception('Característica de escritura no encontrada.'),
     );
 
-    List<int> message = ScooterCommandUtil.getCRCCommunicationKey('yOTmK50z');
+    List<int> message = scooterCommandUtil.getCRCCommunicationKey('yOTmK50z');
 
     print('message send: $convertToHexWithPrefixUppercase(message)');
 
@@ -69,8 +59,7 @@ class DeviceKeyManager {
       }
 
       if (copyLen == 0) return;
-      Uint8List real =
-          Uint8List.fromList(values.sublist(start, start + copyLen));
+      Uint8List real = Uint8List.fromList(values.sublist(start, start + copyLen));
 
       Uint8List command = Uint8List.fromList(real.sublist(0, real.length - 1));
       int crc8 = CRCUtil.calcCRC8(command);
@@ -143,9 +132,6 @@ class DeviceKeyManager {
   }
 
   List<String> convertToHexWithPrefixUppercase(List<int> numbers) {
-    return numbers
-        .map((number) =>
-            '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}')
-        .toList();
+    return numbers.map((number) => '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}').toList();
   }
 }
