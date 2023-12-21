@@ -202,7 +202,7 @@ class ScooterCommandHelper implements IotScooterInterface {
   Stream<List<int>> get scooterCommandStream =>
       _scooterCommandStreamController.stream;
 
-  List<int> getCommand(int ckey, int commandType, List<int> data) {
+  List<int> getCommand() {
     List<int> head = [0xA3, 0xA4].map((val) => val.toSigned(8)).toList();
     int len = data.length;
     int rand = Random().nextInt(256) - 127;

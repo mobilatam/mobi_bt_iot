@@ -1,0 +1,1 @@
+///todo: implementar interface device manager
