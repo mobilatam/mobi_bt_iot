@@ -17,8 +17,12 @@ Future<Uint8List?> processReceivedValues({required List<int> values}) async {
 
   if (copyLen == 0) return null;
 
-  Uint8List real = Uint8List.fromList(values.sublist(start, start + copyLen));
-  Uint8List command = Uint8List.fromList(real.sublist(0, real.length - 1));
+  Uint8List real = Uint8List.fromList(
+    values.sublist(start, start + copyLen),
+  );
+  Uint8List command = Uint8List.fromList(
+    real.sublist(0, real.length - 1),
+  );
   int crc8 = CRCUtil.calcCRC8(command);
 
   int vCrc = real.last & 0xFF;
@@ -35,47 +39,69 @@ Future<Uint8List?> processReceivedValues({required List<int> values}) async {
   }
 }
 
-Future<void> onHandNotifyCommand({required Uint8List command}) async {
+Future<void> onHandNotifyCommand({
+  required Uint8List command,
+}) async {
   const int communicationKeyCommand = 0x01;
   const int errorCommand = 0x02;
 
   switch (command[5]) {
     case communicationKeyCommand:
-      await handCommunicationKey(command: command);
+      await handCommunicationKey(
+        command: command,
+      );
       break;
     case errorCommand:
-      await handCommandError(command: command);
+      await handCommandError(
+        command: command,
+      );
       break;
     default:
-      await handCommandError(command: command);
+      await handCommandError(
+        command: command,
+      );
       break;
   }
 }
 
-Future<void> handCommandError({required Uint8List command}) async {
+Future<void> handCommandError({
+  required Uint8List command,
+}) async {
   int status = command[6];
-  await callbackCommandError(status: status);
+  await callbackCommandError(
+    status: status,
+  );
 }
 
-Future<void> callbackCommandError({required int status}) async {}
+Future<void> callbackCommandError({
+  required int status,
+}) async {}
 
 Future<void> handCommunicationKey({required Uint8List command}) async {
   int flag = command[6];
   if (flag == 1) {
     int mBLECommunicationKey = command[7];
-    await callbackCommunicationKey(mBLECommunicationKey: mBLECommunicationKey);
+    await callbackCommunicationKey(
+      mBLECommunicationKey: mBLECommunicationKey,
+    );
   } else {
     await callbackCommunicationKeyError();
   }
 }
 
-Future<void> callbackCommunicationKey({required int mBLECommunicationKey}) async {
-  DeviceConfig().setKey(mBLECommunicationKey);
+Future<void> callbackCommunicationKey({
+  required int mBLECommunicationKey,
+}) async {
+  // DeviceConfig().setKey(
+  //   mBLECommunicationKey,
+  // );
 }
 
 Future<void> callbackCommunicationKeyError() async {}
 
-List<String> convertToHexWithPrefixUppercase({required List<int> numbers}) {
+List<String> convertToHexWithPrefixUppercase({
+  required List<int> numbers,
+}) {
   return numbers
       .map(
         (number) => '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',

@@ -6,6 +6,7 @@ import 'package:mobi_bt_iot/iot/CrcUtil.dart';
 import 'package:mobi_bt_iot/iot/comand.dart';
 import 'package:mobi_bt_iot/iot/iot_scooter_interface.dart';
 
+///todo: revisar que codigo esté igual que el chat
 // class ScooterCommandHelper implements IotScooterInterface {
 //   static const String tag = 'ScooterCommandHelper';
 //
@@ -200,7 +201,11 @@ class ScooterCommandHelper implements IotScooterInterface {
   Stream<List<int>> get scooterCommandStream => _scooterCommandStreamController.stream;
 
   @override
-  List<int> getCommand({required int ckey, required int commandType, required List<int> data}) {
+  List<int> getCommand({
+    required int ckey,
+    required int commandType,
+    required List<int> data,
+  }) {
     List<int> head = [0xA3, 0xA4].map((val) => val.toSigned(8)).toList();
     int len = data.length;
     int rand = Random().nextInt(256) - 127;
@@ -210,11 +215,18 @@ class ScooterCommandHelper implements IotScooterInterface {
       ckey,
       commandType,
     ]);
-    return addBytes(a: command, b: data);
+    return addBytes(
+      a: command,
+      b: data,
+    );
   }
 
+//convert string to int
+  ///todo: stringToInt type data get command
   @override
-  List<int> getCRCCommunicationKey({required String deviceKey}) {
+  List<int> getCRCCommunicationKey({
+    required String deviceKey,
+  }) {
     List<int> data = List.filled(8, 0);
     for (int i = 0; i < deviceKey.length; i++) {
       data[i] = deviceKey.codeUnitAt(i);
@@ -246,7 +258,9 @@ class ScooterCommandHelper implements IotScooterInterface {
   }
 
   @override
-  List<int> getCRCScooterOpenResponse({required int ckey}) {
+  List<int> getCRCScooterOpenResponse({
+    required int ckey,
+  }) {
     List<int> data = [0x02];
     List<int> command = getCommand(
       ckey: ckey,

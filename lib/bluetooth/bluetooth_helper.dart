@@ -1,8 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:mobi_bt_iot/bluetooth/bluetooth_interface.dart';
 import 'package:mobi_bt_iot/bluetooth/models/device_model.dart';
 import 'package:mobi_bt_iot/bluetooth/models/service_model.dart';
-import 'package:mobi_bt_iot/bluetooth/bluetooth_interface.dart';
 
 class BluetoothHelper implements BluetoothDeviceInterface {
   final FlutterBlue flutterBlue = FlutterBlue.instance;
@@ -60,7 +61,7 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   }
 
   @override
-  Future<void> connectToDevice(String address) async {
+  Future<void> connectToDevice({required String address}) async {
     DeviceModel? targetDevice = _discoveredDevices.firstWhere(
       (d) => d.address == address,
     );
@@ -74,7 +75,7 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   }
 
   @override
-  Future<void> disconnectFromDevice(String address) async {
+  Future<void> disconnectFromDevice({required String address}) async {
     var device = flutterBlue.connectedDevices.then(
       (devices) => devices.firstWhere((d) => d.id.toString() == address),
     );
