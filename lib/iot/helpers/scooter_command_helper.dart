@@ -187,7 +187,8 @@ import 'package:mobi_bt_iot/iot/utils/crc_util.dart';
 // }
 
 class ScooterCommandHelper implements IotScooterInterface {
-  static final ScooterCommandHelper _instance = ScooterCommandHelper._internal();
+  static final ScooterCommandHelper _instance =
+      ScooterCommandHelper._internal();
 
   factory ScooterCommandHelper() {
     return _instance;
@@ -195,9 +196,11 @@ class ScooterCommandHelper implements IotScooterInterface {
 
   ScooterCommandHelper._internal();
 
-  final StreamController<List<int>> _scooterCommandStreamController = StreamController<List<int>>.broadcast();
+  final StreamController<List<int>> _scooterCommandStreamController =
+      StreamController<List<int>>.broadcast();
 
-  Stream<List<int>> get scooterCommandStream => _scooterCommandStreamController.stream;
+  Stream<List<int>> get scooterCommandStream =>
+      _scooterCommandStreamController.stream;
 
   @override
   List<int> getCommand({

@@ -69,5 +69,4 @@ abstract class IotScooterInterface {
   List<int> crcByte({
     required List<int> ori,
   });
-
 }

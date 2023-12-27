@@ -1,9 +1,4 @@
 import 'dart:math';
-
-/// todo: revisar que todo este tipado required ok
-/// todo: revisar trailing commas ok
-/// todo: orden de las carpetas ok
-
 import 'package:mobi_bt_iot/iot/interfaces/base_command_interface.dart';
 
 import '../utils/crc_util.dart';

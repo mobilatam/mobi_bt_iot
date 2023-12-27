@@ -122,9 +122,11 @@ class DeviceManagerHelper implements DeviceManagerInterface {
   final String deviceUniqueKey;
   final String? error;
 
-  final StreamController<List<int>> _deviceCommandStreamController = StreamController<List<int>>.broadcast();
+  final StreamController<List<int>> _deviceCommandStreamController =
+      StreamController<List<int>>.broadcast();
 
-  Stream<List<int>> get deviceCommandStream => _deviceCommandStreamController.stream;
+  Stream<List<int>> get deviceCommandStream =>
+      _deviceCommandStreamController.stream;
 
   @override
   Future<void> retrieveKey() async {
@@ -137,23 +139,26 @@ class DeviceManagerHelper implements DeviceManagerInterface {
         );
       }
 
-      List<BluetoothService> services = await connectedDevice.discoverServices();
+      List<BluetoothService> services =
+          await connectedDevice.discoverServices();
 
       BluetoothService service = services.firstWhere(
-            (s) => s.uuid.toString().toUpperCase() == uuid,
+        (s) => s.uuid.toString().toUpperCase() == uuid,
         orElse: () => throw CustomException(
           message: error ?? '',
         ),
       );
 
-      BluetoothCharacteristic notifyCharacteristic = service.characteristics.firstWhere(
-            (c) => c.uuid.toString().toUpperCase() == uuid,
+      BluetoothCharacteristic notifyCharacteristic =
+          service.characteristics.firstWhere(
+        (c) => c.uuid.toString().toUpperCase() == uuid,
         orElse: () => throw CustomException(
           message: error ?? '',
         ),
       );
 
-      BluetoothCharacteristic writeCharacteristic = service.characteristics.firstWhere(
+      BluetoothCharacteristic writeCharacteristic =
+          service.characteristics.firstWhere(
         (c) => c.uuid.toString().toUpperCase() == uuid,
         orElse: () => throw CustomException(
           message: error ?? '',

@@ -7,8 +7,10 @@ import 'package:mobi_bt_iot/bluetooth/models/service_model.dart';
 
 class BluetoothHelper implements BluetoothDeviceInterface {
   final FlutterBlue flutterBlue = FlutterBlue.instance;
-  final _discoveredDevicesStreamController = StreamController<List<DeviceModel>>.broadcast();
-  final _servicesStreamController = StreamController<List<ServiceModel>>.broadcast();
+  final _discoveredDevicesStreamController =
+      StreamController<List<DeviceModel>>.broadcast();
+  final _servicesStreamController =
+      StreamController<List<ServiceModel>>.broadcast();
   List<DeviceModel> _discoveredDevices = [];
   BluetoothDevice? _connectedDevice;
 
@@ -21,7 +23,8 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   BluetoothHelper._internal();
 
   @override
-  Stream<List<DeviceModel>> getDiscoveredDevicesStream() => _discoveredDevicesStreamController.stream;
+  Stream<List<DeviceModel>> getDiscoveredDevicesStream() =>
+      _discoveredDevicesStreamController.stream;
 
   Stream<List<ServiceModel>> getConnectedDeviceServices() {
     if (_connectedDevice == null) {
@@ -161,7 +164,8 @@ class BluetoothHelper implements BluetoothDeviceInterface {
       throw Exception('No hay ningún dispositivo conectado.');
     }
 
-    List<BluetoothService> services = await _connectedDevice!.discoverServices();
+    List<BluetoothService> services =
+        await _connectedDevice!.discoverServices();
     BluetoothService service = services.firstWhere(
       (s) => s.uuid.toString().toUpperCase() == serviceUuid.toUpperCase(),
       orElse: () => throw Exception('Servicio no encontrado.'),

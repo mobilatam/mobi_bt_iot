@@ -1,7 +1,9 @@
 import '../constants/crc_lists.dart';
 
 class CRCUtil {
-  static int calcCRC8(List<int> data,) {
+  static int calcCRC8(
+    List<int> data,
+  ) {
     int crc8 = 0;
     for (int i = 0; i < data.length; i++) {
       int index = (crc8 ^ data[i]) & 0xFF;
@@ -10,7 +12,9 @@ class CRCUtil {
     return crc8;
   }
 
-  static int calcCRC16(List<int> data,) {
+  static int calcCRC16(
+    List<int> data,
+  ) {
     return _calcCRC16(
       data,
       0,
@@ -18,8 +22,9 @@ class CRCUtil {
     );
   }
 
-  static int _calcCRC16(List<int> data,
-      int offset,
+  static int _calcCRC16(
+    List<int> data,
+    int offset,
     int len, [
     int preval = 0xFFFF,
   ]) {
