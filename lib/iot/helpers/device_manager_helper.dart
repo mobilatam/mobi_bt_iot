@@ -31,7 +31,7 @@ import '../utils/custom_exception.dart';
 //     );
 //
 //     BluetoothCharacteristic notifyCharacteristic = service.characteristics.firstWhere(
-//       (c) => c.uuid.toString().toUpperCase() == '6E400003-B5A3-F393-E0A9-E50E24DCCA9E',
+//       (c) => c.uuid.toString().toUpperCase() == '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
 //       orElse: () => throw Exception('Característica de notificación no encontrada.'),
 //     );
 //
@@ -82,7 +82,7 @@ import '../utils/custom_exception.dart';
 //     );
 //
 //     BluetoothCharacteristic notifyCharacteristic = service.characteristics.firstWhere(
-//       (c) => c.uuid.toString().toUpperCase() == '6E400003-B5A3-F393-E0A9-E50E24DCCA9E',
+//       (c) => c.uuid.toString().toUpperCase() == '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
 //       orElse: () => throw Exception('Característica de notificación no encontrada.'),
 //     );
 //
