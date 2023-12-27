@@ -3,31 +3,34 @@ import 'package:mobi_bt_iot/bluetooth/entities/service_entity.dart';
 
 class ServiceModel extends ServiceEntity {
   ServiceModel({
-    required String uuid,
-    required String deviceId,
-    required bool isPrimary,
-    required List<BluetoothCharacteristic> characteristics,
-    required List<BluetoothService> includedServices,
-  }) : super(
-          uuid: uuid,
-          deviceId: deviceId,
-          isPrimary: isPrimary,
-          characteristics: characteristics,
-          includedServices: includedServices,
-        );
+    required super.uuid,
+    required super.deviceId,
+    required super.isPrimary,
+    required super.characteristics,
+    required super.includedServices,
+  });
 
   Map<String, dynamic> toJson() {
     return {
       'uuid': uuid,
       'deviceId': deviceId,
       'isPrimary': isPrimary,
-      'characteristics': characteristics.map((c) => c.uuid.toString()).toList(),
-      'includedServices':
-          includedServices.map((s) => s.uuid.toString()).toList(),
+      'characteristics': characteristics
+          .map(
+            (c) => c.uuid.toString(),
+          )
+          .toList(),
+      'includedServices': includedServices
+          .map(
+            (s) => s.uuid.toString(),
+          )
+          .toList(),
     };
   }
 
-  factory ServiceModel.fromJson(Map<String, dynamic> json) {
+  factory ServiceModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ServiceModel(
       uuid: json['uuid'] ?? '',
       deviceId: json['deviceId'] ?? '',
@@ -37,7 +40,9 @@ class ServiceModel extends ServiceEntity {
     );
   }
 
-  static ServiceModel fromBluetoothService(BluetoothService service) {
+  static ServiceModel fromBluetoothService(
+    BluetoothService service,
+  ) {
     return ServiceModel(
       uuid: service.uuid.toString(),
       deviceId: service.deviceId.toString(),

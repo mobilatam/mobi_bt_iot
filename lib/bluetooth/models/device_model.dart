@@ -3,16 +3,11 @@ import 'package:mobi_bt_iot/bluetooth/entities/device_entity.dart';
 
 class DeviceModel extends DeviceEntity {
   DeviceModel({
-    required String name,
-    required String address,
-    required int type,
-    BluetoothDevice? connectState,
-  }) : super(
-          name: name,
-          address: address,
-          type: type,
-          connectState: connectState,
-        );
+    required super.name,
+    required super.address,
+    required super.type,
+    super.connectState,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -22,7 +17,9 @@ class DeviceModel extends DeviceEntity {
     };
   }
 
-  factory DeviceModel.fromJson(Map<String, dynamic> json) {
+  factory DeviceModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return DeviceModel(
       name: json['name'] ?? '',
       address: json['address'] ?? '',
@@ -30,9 +27,11 @@ class DeviceModel extends DeviceEntity {
     );
   }
 
-  static DeviceModel fromBluetoothDevice(BluetoothDevice device) {
+  static DeviceModel fromBluetoothDevice(
+    BluetoothDevice device,
+  ) {
     return DeviceModel(
-      name: device.name ?? '',
+      name: device.name,
       address: device.id.toString(),
       type: device.type.index,
       connectState: device,

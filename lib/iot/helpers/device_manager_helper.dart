@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:mobi_bt_iot/iot/device_manager_interface.dart';
-import 'package:mobi_bt_iot/iot/scooter_command_helper.dart';
+import 'package:mobi_bt_iot/iot/helpers/scooter_command_helper.dart';
+import 'package:mobi_bt_iot/iot/interfaces/device_manager_interface.dart';
 
-import '../bluetooth/bluetooth_helper.dart';
+import '../../bluetooth/bluetooth_helper.dart';
+import '../utils/custom_exception.dart';
 
 ///
 // class DeviceManager implements DeviceManagerInterface {
@@ -107,7 +108,8 @@ import '../bluetooth/bluetooth_helper.dart';
 // }
 
 class DeviceManagerHelper implements DeviceManagerInterface {
-  DeviceManagerHelper({
+  DeviceManagerHelper(
+    this.error, {
     required BluetoothHelper bluetoothHelper,
     required this.uuid,
     required this.deviceUniqueKey,
@@ -118,59 +120,86 @@ class DeviceManagerHelper implements DeviceManagerInterface {
   final ScooterCommandHelper _scooterCommandHelper;
   final String uuid;
   final String deviceUniqueKey;
+  final String? error;
 
   final StreamController<List<int>> _deviceCommandStreamController = StreamController<List<int>>.broadcast();
 
   Stream<List<int>> get deviceCommandStream => _deviceCommandStreamController.stream;
 
-  ///: todo: class propia para errores
   @override
   Future<void> retrieveKey() async {
     try {
       var connectedDevice = _bluetoothHelper.getConnectedDevice();
 
       if (connectedDevice == null) {
-        throw Exception('No hay ningún dispositivo conectado.');
+        throw CustomException(
+          message: error ?? '',
+        );
       }
 
       List<BluetoothService> services = await connectedDevice.discoverServices();
 
       BluetoothService service = services.firstWhere(
-        (s) => s.uuid.toString().toUpperCase() == uuid,
-        orElse: () => throw Exception('Servicio no encontrado.'),
+            (s) => s.uuid.toString().toUpperCase() == uuid,
+        orElse: () => throw CustomException(
+          message: error ?? '',
+        ),
       );
 
       BluetoothCharacteristic notifyCharacteristic = service.characteristics.firstWhere(
-        (c) => c.uuid.toString().toUpperCase() == uuid,
-        orElse: () => throw Exception('Característica de notificación no encontrada.'),
+            (c) => c.uuid.toString().toUpperCase() == uuid,
+        orElse: () => throw CustomException(
+          message: error ?? '',
+        ),
       );
 
       BluetoothCharacteristic writeCharacteristic = service.characteristics.firstWhere(
         (c) => c.uuid.toString().toUpperCase() == uuid,
-        orElse: () => throw Exception('Característica de escritura no encontrada.'),
+        orElse: () => throw CustomException(
+          message: error ?? '',
+        ),
       );
 
-      List<int> message = _scooterCommandHelper.getCRCCommunicationKey(deviceKey: deviceUniqueKey);
+      List<int> message = _scooterCommandHelper.getCRCCommunicationKey(
+        deviceKey: deviceUniqueKey,
+      );
 
-      await writeCharacteristic.write(message);
-      await notifyCharacteristic.setNotifyValue(true);
-      notifyCharacteristic.value.listen((values) {
-        _deviceCommandStreamController.add(values);
-      });
+      await writeCharacteristic.write(
+        message,
+      );
+      await notifyCharacteristic.setNotifyValue(
+        true,
+      );
+      notifyCharacteristic.value.listen(
+        (
+          values,
+        ) {
+          _deviceCommandStreamController.add(
+            values,
+          );
+        },
+      );
     } catch (e) {
-      print('Error in retrieveKey: $e');
-      // Handle the error accordingly
+      print(
+        'Error in retrieveKey: $e',
+      );
     }
   }
 
   @override
-  Future<void> unlock() async {}
+  Future<void> unlock() async {
+    ///todo: implementar unlock
+  }
 
   @override
-  Future<void> lock() async {}
+  Future<void> lock() async {
+    ///todo: implementar lock
+  }
 
   @override
-  Future<void> info() async {}
+  Future<void> info() async {
+    ///todo: implementar info
+  }
 
   void dispose() {
     _deviceCommandStreamController.close();

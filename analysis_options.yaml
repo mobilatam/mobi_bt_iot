@@ -1,4 +1,11 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+# Enforce trailing commas for function calls and declarations:
+linter:
+  rules:
+    require_trailing_commas: true
+
+# Optionally, enable the rule for lists, maps, and sets:
+dart_code_metrics:
+  metrics:
+    prefer-trailing-comma: true

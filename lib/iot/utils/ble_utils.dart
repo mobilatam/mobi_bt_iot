@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
-import 'CrcUtil.dart';
+import 'crc_util.dart';
 
-Future<Uint8List?> processReceivedValues({required List<int> values}) async {
+Future<Uint8List?> processReceivedValues({
+  required List<int> values,
+}) async {
   int start = 0;
   int copyLen = 0;
 
@@ -18,12 +20,17 @@ Future<Uint8List?> processReceivedValues({required List<int> values}) async {
   if (copyLen == 0) return null;
 
   Uint8List real = Uint8List.fromList(
-    values.sublist(start, start + copyLen),
+    values.sublist(
+      start,
+      start + copyLen,
+    ),
   );
   Uint8List command = Uint8List.fromList(
     real.sublist(0, real.length - 1),
   );
-  int crc8 = CRCUtil.calcCRC8(command);
+  int crc8 = CRCUtil.calcCRC8(
+    command,
+  );
 
   int vCrc = real.last & 0xFF;
 
@@ -77,7 +84,9 @@ Future<void> callbackCommandError({
   required int status,
 }) async {}
 
-Future<void> handCommunicationKey({required Uint8List command}) async {
+Future<void> handCommunicationKey({
+  required Uint8List command,
+}) async {
   int flag = command[6];
   if (flag == 1) {
     int mBLECommunicationKey = command[7];
@@ -92,9 +101,9 @@ Future<void> handCommunicationKey({required Uint8List command}) async {
 Future<void> callbackCommunicationKey({
   required int mBLECommunicationKey,
 }) async {
-  // DeviceConfig().setKey(
-  //   mBLECommunicationKey,
-  // );
+  DeviceConfig().setKey(
+    mBLECommunicationKey,
+  );
 }
 
 Future<void> callbackCommunicationKeyError() async {}
@@ -104,7 +113,10 @@ List<String> convertToHexWithPrefixUppercase({
 }) {
   return numbers
       .map(
-        (number) => '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',
+        (number) => '0x${number.toRadixString(16).toUpperCase().padLeft(
+              2,
+              '0',
+            )}',
       )
       .toList();
 }

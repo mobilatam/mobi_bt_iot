@@ -1,4 +1,3 @@
-/// todo:
 final List<int> tCrc16H = [
   0x00,
   0xC1,

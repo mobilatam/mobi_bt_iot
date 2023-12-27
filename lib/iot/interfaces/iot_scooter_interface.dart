@@ -2,7 +2,7 @@ abstract class IotScooterInterface {
   List<int> getCommand({
     required int ckey,
     required int commandType,
-    required List<int> data,
+    required List<int> stringToInt,
   });
 
   List<int> getCRCCommunicationKey({
@@ -11,6 +11,7 @@ abstract class IotScooterInterface {
 
   List<int> getCRCScooterOpen({
     required int ckey,
+    required int mode,
     required int uid,
     required int timestamp,
   });
@@ -69,5 +70,4 @@ abstract class IotScooterInterface {
     required List<int> ori,
   });
 
-  ///todo: typar todo y trailing comas
 }

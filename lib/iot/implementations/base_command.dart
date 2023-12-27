@@ -1,13 +1,12 @@
 import 'dart:math';
 
-/// todo: revisar que todo este tipado required
-/// todo: revisar trailing commas
-/// todo: constructor primero, finales despues
-/// todo: orden de las carpetas
-/// todo: manejador de errores
+/// todo: revisar que todo este tipado required ok
+/// todo: revisar trailing commas ok
+/// todo: orden de las carpetas ok
 
-import 'package:mobi_bt_iot/iot/CrcUtil.dart';
-import 'package:mobi_bt_iot/iot/base_command_interface.dart';
+import 'package:mobi_bt_iot/iot/interfaces/base_command_interface.dart';
+
+import '../utils/crc_util.dart';
 
 class BaseCommand implements BaseCommandInterface {
   @override
@@ -69,7 +68,15 @@ class BaseCommand implements BaseCommandInterface {
     List<int> head = [0xA3, 0xA4];
     int len = data.length;
     int rand = Random().nextInt(255) & 0xff;
-    List<int> command = addBytes(a: head, b: [len, rand, ckey, commandType]);
+    List<int> command = addBytes(
+      a: head,
+      b: [
+        len,
+        rand,
+        ckey,
+        commandType,
+      ],
+    );
     return addBytes(
       a: command,
       b: data,
@@ -80,8 +87,12 @@ class BaseCommand implements BaseCommandInterface {
   List<int> getXorCRCCommand({
     required List<int> command,
   }) {
-    List<int> xorCommand = encode(command: command);
-    List<int> crcOrder = crcByte(ori: xorCommand);
+    List<int> xorCommand = encode(
+      command: command,
+    );
+    List<int> crcOrder = crcByte(
+      ori: xorCommand,
+    );
     return crcOrder;
   }
 
@@ -89,7 +100,9 @@ class BaseCommand implements BaseCommandInterface {
   List<int> encode({
     required List<int> command,
   }) {
-    List<int> xorComm = List.from(command);
+    List<int> xorComm = List.from(
+      command,
+    );
     xorComm[3] = (command[3] + 0x32) & 0xFF;
     for (int i = 4; i < command.length; i++) {
       xorComm[i] = command[i] ^ command[3];
@@ -101,9 +114,12 @@ class BaseCommand implements BaseCommandInterface {
   List<int> crcByte({
     required List<int> ori,
   }) {
-    List<int> ret = List.from(ori)
-      ..add(
-        CRCUtil.calcCRC8(ori),
+    List<int> ret = List.from(
+      ori,
+    )..add(
+        CRCUtil.calcCRC8(
+          ori,
+        ),
       );
     return ret;
   }
@@ -113,7 +129,9 @@ class BaseCommand implements BaseCommandInterface {
     required List<int> ori,
   }) {
     List<int> ret = [
-      CRCUtil.calcCRC8(ori),
+      CRCUtil.calcCRC8(
+        ori,
+      ),
       ...ori,
     ];
     return ret;
