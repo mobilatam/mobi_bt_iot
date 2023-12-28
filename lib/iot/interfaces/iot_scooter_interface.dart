@@ -2,11 +2,10 @@ abstract class IotScooterInterface {
   List<int> getCommand({
     required int ckey,
     required int commandType,
-    required List<int> stringToInt,
+    required List<int> dataList,
   });
-
   List<int> getCRCCommunicationKey({
-    required String deviceKey,
+    required String deviceUniqueKey,
   });
 
   List<int> getCRCScooterOpen({
@@ -15,12 +14,12 @@ abstract class IotScooterInterface {
     required int uid,
     required int timestamp,
   });
-
   List<int> getCRCScooterOpenResponse({
     required int ckey,
   });
 
   List<int> getCRCScooterClose({
+    required String deviceUniqueKey,
     required int ckey,
   });
 
@@ -50,8 +49,8 @@ abstract class IotScooterInterface {
   });
 
   List<int> addBytes({
-    required List<int> a,
-    required List<int> b,
+    required List<int> dataListA,
+    required List<int> dataListB,
   });
 
   List<int> intToBytes({
@@ -59,11 +58,10 @@ abstract class IotScooterInterface {
   });
 
   List<int> getXorCRCCommand({
-    required List<int> command,
+    required List<int> dataCommand,
   });
-
   List<int> encode({
-    required List<int> command,
+    required List<int> commandList,
   });
 
   List<int> crcByte({

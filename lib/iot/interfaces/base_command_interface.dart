@@ -1,36 +1,21 @@
 abstract class BaseCommandInterface {
   List<int> addBytes({
-    required List<int> a,
-    required List<int> b,
+    required List<int> dataListA,
+    required List<int> dataListB,
   });
 
   List<int> addSingleByte({
-    required List<int> a,
-    required int b,
+    required List<int> dataListA,
+    required int singleInteger,
   });
 
   List<int> addInt({
-    required List<int> a,
-    required int b,
+    required List<int> dataListA,
+    required int singleInteger,
   });
-
   List<int> addLong({
-    required List<int> a,
-    required int b,
-  });
-
-  List<int> getCommand({
-    required int ckey,
-    required int commandType,
-    required List<int> data,
-  });
-
-  List<int> getXorCRCCommand({
-    required List<int> command,
-  });
-
-  List<int> encode({
-    required List<int> command,
+    required List<int> dataListA,
+    required int singleInteger,
   });
 
   List<int> crcByte({

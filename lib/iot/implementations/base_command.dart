@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:mobi_bt_iot/iot/interfaces/base_command_interface.dart';
 
 import '../utils/crc_util.dart';
@@ -6,103 +5,52 @@ import '../utils/crc_util.dart';
 class BaseCommand implements BaseCommandInterface {
   @override
   List<int> addBytes({
-    required List<int> a,
-    required List<int> b,
+    required List<int> dataListA,
+    required List<int> dataListB,
   }) {
     return [
-      ...a,
-      ...b,
+      ...dataListA,
+      ...dataListB,
     ];
   }
 
   @override
   List<int> addSingleByte({
-    required List<int> a,
-    required int b,
+    required List<int> dataListA,
+    required int singleInteger,
   }) {
     return [
-      ...a,
-      b,
+      ...dataListA,
+      singleInteger,
     ];
   }
 
   @override
   List<int> addInt({
-    required List<int> a,
-    required int b,
+    required List<int> dataListA,
+    required int singleInteger,
   }) {
     List<int> bBytes = [
-      (b >> 24) & 0xFF,
-      (b >> 16) & 0xFF,
-      (b >> 8) & 0xFF,
-      b & 0xFF,
+      (singleInteger >> 24) & 0xFF,
+      (singleInteger >> 16) & 0xFF,
+      (singleInteger >> 8) & 0xFF,
+      singleInteger & 0xFF,
     ];
     return addBytes(
-      a: a,
-      b: bBytes,
+      dataListA: dataListA,
+      dataListB: bBytes,
     );
   }
 
   @override
   List<int> addLong({
-    required List<int> a,
-    required int b,
+    required List<int> dataListA,
+    required int singleInteger,
   }) {
     return addInt(
-      a: a,
-      b: b,
+      dataListA: dataListA,
+      singleInteger: singleInteger,
     );
-  }
-
-  @override
-  List<int> getCommand({
-    required int ckey,
-    required int commandType,
-    required List<int> data,
-  }) {
-    List<int> head = [0xA3, 0xA4];
-    int len = data.length;
-    int rand = Random().nextInt(255) & 0xff;
-    List<int> command = addBytes(
-      a: head,
-      b: [
-        len,
-        rand,
-        ckey,
-        commandType,
-      ],
-    );
-    return addBytes(
-      a: command,
-      b: data,
-    );
-  }
-
-  @override
-  List<int> getXorCRCCommand({
-    required List<int> command,
-  }) {
-    List<int> xorCommand = encode(
-      command: command,
-    );
-    List<int> crcOrder = crcByte(
-      ori: xorCommand,
-    );
-    return crcOrder;
-  }
-
-  @override
-  List<int> encode({
-    required List<int> command,
-  }) {
-    List<int> xorComm = List.from(
-      command,
-    );
-    xorComm[3] = (command[3] + 0x32) & 0xFF;
-    for (int i = 4; i < command.length; i++) {
-      xorComm[i] = command[i] ^ command[3];
-    }
-    return xorComm;
   }
 
   @override
@@ -113,7 +61,7 @@ class BaseCommand implements BaseCommandInterface {
       ori,
     )..add(
         CRCUtil.calcCRC8(
-          ori,
+          dataList: ori,
         ),
       );
     return ret;
@@ -125,7 +73,7 @@ class BaseCommand implements BaseCommandInterface {
   }) {
     List<int> ret = [
       CRCUtil.calcCRC8(
-        ori,
+        dataList: ori,
       ),
       ...ori,
     ];

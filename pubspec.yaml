@@ -14,6 +14,7 @@ dependencies:
   flutter_blue:
     git:
       url: https://github.com/pauldemarco/flutter_blue.git
+  flutter_secure_storage: ^9.0.0
   #url: https://github.com/boskokg/flutter_blue/
   #ref: 0.11.0
   #ref: 0.8.0
