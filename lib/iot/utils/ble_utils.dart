@@ -1,17 +1,19 @@
 import 'dart:typed_data';
 
-import 'crc_util.dart';
+import 'package:mobi_bt_iot/device_config.dart';
 
-int ckeyObtainer = 0;
+import 'crc_util.dart';
 
 Future<Uint8List?> processReceivedValues({
   required List<int> dataListValues,
+  required bool isInfo,
 }) async {
   int start = 0;
   int copyLen = 0;
 
   for (int i = 0; i < dataListValues.length; i++) {
-    if ((dataListValues[i] & 0xFF) == 0xA3 && (dataListValues[i + 1] & 0xFF) == 0xA4) {
+    if ((dataListValues[i] & 0xFF) == 0xA3 &&
+        (dataListValues[i + 1] & 0xFF) == 0xA4) {
       start = i;
       int len = dataListValues[i + 2];
       copyLen = len + 7;
@@ -21,8 +23,18 @@ Future<Uint8List?> processReceivedValues({
 
   if (copyLen == 0) return null;
 
-  Uint8List real = Uint8List.fromList(dataListValues.sublist(start, start + copyLen));
-  Uint8List responseMessage = Uint8List.fromList(real.sublist(0, real.length - 1));
+  Uint8List real = Uint8List.fromList(
+    dataListValues.sublist(
+      start,
+      start + copyLen,
+    ),
+  );
+  Uint8List responseMessage = Uint8List.fromList(
+    real.sublist(
+      0,
+      real.length - 1,
+    ),
+  );
   int crc8 = CRCUtil.calcCRC8(
     dataList: responseMessage,
   );
@@ -35,9 +47,13 @@ Future<Uint8List?> processReceivedValues({
     for (int i = 4; i < responseMessage.length; i++) {
       responseMessage[i] = (responseMessage[i] ^ rand) & 0xFF;
     }
-    onHandNotifyCommand(
-      handleResponse: responseMessage,
-    );
+
+    if (isInfo == false) {
+      onHandNotifyCommand(
+        handleResponse: responseMessage,
+      );
+    }
+
     return responseMessage;
   } else {
     return null;
@@ -95,22 +111,19 @@ Future<void> handCommunicationKey({
 Future<int> callbackCommunicationKey({
   required int mBLECommunicationKey,
 }) async {
-  ckeyObtainer = mBLECommunicationKey;
+  DeviceConfig().setDeviceCkey(
+    newDeviceCkey: mBLECommunicationKey,
+  );
   return mBLECommunicationKey;
-}
-
-int returnCkeyObtainer() {
-  return ckeyObtainer;
 }
 
 Future<void> callbackCommunicationKeyError() async {}
 
-List<String> convertToHexWithPrefixUppercase({
-  required List<int> dataIntList,
-}) {
+List<String> convertToHexWithPrefixUppercase({required List<int> dataIntList}) {
   return dataIntList
       .map(
-        (number) => '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',
+        (number) =>
+            '0x${number.toRadixString(16).toUpperCase().padLeft(2, '0')}',
       )
       .toList();
 }
@@ -121,8 +134,10 @@ List<int> onHandInfo({
   int power = (responseDevice[6] & 0xFF);
   int mode = responseDevice[7] & 0xFF;
   int speed = ((responseDevice[8] & 0xFF) << 8) | (responseDevice[9] & 0xFF);
-  int mileage = ((responseDevice[10] & 0xFF) << 8) | (responseDevice[11] & 0xFF);
-  int prescientMileage = ((responseDevice[12] & 0xFF) << 8) | (responseDevice[13] & 0xFF);
+  int mileage =
+      ((responseDevice[10] & 0xFF) << 8) | (responseDevice[11] & 0xFF);
+  int prescientMileage =
+      ((responseDevice[12] & 0xFF) << 8) | (responseDevice[13] & 0xFF);
 
   return [
     power,

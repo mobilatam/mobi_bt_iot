@@ -1,10 +1,7 @@
-import 'package:mobi_bt_iot/iot/interfaces/base_command_interface.dart';
+import 'package:mobi_bt_iot/iot/utils/crc_util.dart';
 
-import '../utils/crc_util.dart';
-
-class BaseCommand implements BaseCommandInterface {
-  @override
-  List<int> addBytes({
+class BaseCommand {
+  static List<int> addBytes({
     required List<int> dataListA,
     required List<int> dataListB,
   }) {
@@ -14,8 +11,7 @@ class BaseCommand implements BaseCommandInterface {
     ];
   }
 
-  @override
-  List<int> addSingleByte({
+  static List<int> addSingleByte({
     required List<int> dataListA,
     required int singleInteger,
   }) {
@@ -25,8 +21,7 @@ class BaseCommand implements BaseCommandInterface {
     ];
   }
 
-  @override
-  List<int> addInt({
+  static List<int> addInt({
     required List<int> dataListA,
     required int singleInteger,
   }) {
@@ -42,8 +37,7 @@ class BaseCommand implements BaseCommandInterface {
     );
   }
 
-  @override
-  List<int> addLong({
+  static List<int> addLong({
     required List<int> dataListA,
     required int singleInteger,
   }) {
@@ -53,13 +47,11 @@ class BaseCommand implements BaseCommandInterface {
     );
   }
 
-  @override
-  List<int> crcByte({
+  static List<int> crcByte({
     required List<int> ori,
   }) {
-    List<int> ret = List.from(
-      ori,
-    )..add(
+    List<int> ret = List.from(ori)
+      ..add(
         CRCUtil.calcCRC8(
           dataList: ori,
         ),
@@ -67,8 +59,7 @@ class BaseCommand implements BaseCommandInterface {
     return ret;
   }
 
-  @override
-  List<int> crcByte2({
+  static List<int> crcByte2({
     required List<int> ori,
   }) {
     List<int> ret = [
