@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:mobi_bt_iot/iot/constants/command_type.dart';
-import 'package:mobi_bt_iot/iot/implementations/base_command.dart';
+import 'package:mobi_bt_iot/iot/utils/base_command.dart';
 import 'package:mobi_bt_iot/iot/utils/crc_util.dart';
 
 class ScooterCommandUtil extends BaseCommand {

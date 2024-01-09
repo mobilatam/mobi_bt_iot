@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:mobi_bt_iot/bluetooth/bluetooth_helper.dart';
-import 'package:mobi_bt_iot/device_config.dart';
+import 'package:mobi_bt_iot/iot/config/device_config.dart';
 import 'package:mobi_bt_iot/iot/interfaces/device_manager_interface.dart';
 import 'package:mobi_bt_iot/iot/utils/ble_utils.dart';
-import 'package:mobi_bt_iot/iot/utils/bluetooth_device_manager.dart';
+import 'package:mobi_bt_iot/iot/helpers/bluetooth_device_manager.dart';
 import 'package:mobi_bt_iot/iot/utils/scooter_utils.dart';
 
 class DeviceManager implements DeviceManagerInterface {

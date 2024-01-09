@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:mobi_bt_iot/device_config.dart';
+import 'package:mobi_bt_iot/iot/config/device_config.dart';
 
 import 'crc_util.dart';
 
@@ -77,11 +78,6 @@ Future<void> onHandNotifyCommand({
         handleError: handleResponse,
       );
       break;
-    default:
-      await handCommandError(
-        handleError: handleResponse,
-      );
-      break;
   }
 }
 
@@ -89,35 +85,19 @@ Future<void> handCommandError({
   required Uint8List handleError,
 }) async {
   int status = handleError[6];
-  await callbackCommandError(status);
+  log(status);
 }
-
-Future<void> callbackCommandError(int status) async {}
 
 Future<void> handCommunicationKey({
   required Uint8List responseMessage,
 }) async {
   int flag = responseMessage[6];
   if (flag == 1) {
-    int mBLECommunicationKey = responseMessage[7];
-    await callbackCommunicationKey(
-      mBLECommunicationKey: mBLECommunicationKey,
+    DeviceConfig().setDeviceCkey(
+      newDeviceCkey: responseMessage[7],
     );
-  } else {
-    await callbackCommunicationKeyError();
   }
 }
-
-Future<int> callbackCommunicationKey({
-  required int mBLECommunicationKey,
-}) async {
-  DeviceConfig().setDeviceCkey(
-    newDeviceCkey: mBLECommunicationKey,
-  );
-  return mBLECommunicationKey;
-}
-
-Future<void> callbackCommunicationKeyError() async {}
 
 List<String> convertToHexWithPrefixUppercase({required List<int> dataIntList}) {
   return dataIntList

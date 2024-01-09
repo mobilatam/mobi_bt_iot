@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:mobi_bt_iot/bluetooth/bluetooth_helper.dart';
-import 'package:mobi_bt_iot/device_config.dart';
+import 'package:mobi_bt_iot/iot/config/device_config.dart';
 import 'package:mobi_bt_iot/iot/utils/custom_exception.dart';
 
 class BluetoothServiceManager {

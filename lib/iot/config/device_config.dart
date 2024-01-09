@@ -1,16 +1,17 @@
 class DeviceConfig {
-  static final DeviceConfig _instance = DeviceConfig._internal();
-
   factory DeviceConfig() {
     return _instance;
   }
+
+  static final DeviceConfig _instance = DeviceConfig._internal();
+
+  DeviceConfig._internal();
+
   String deviceMac = '';
   String deviceUniqueKey = 'yOTmK50z';
   int deviceCkey = 0;
   List<int> deviceInfo = [];
   List<String> deviceListUid = [];
-
-  DeviceConfig._internal();
 
   String getDeviceMac() {
     return deviceMac;
