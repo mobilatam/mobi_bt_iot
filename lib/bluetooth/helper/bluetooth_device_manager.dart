@@ -23,9 +23,9 @@ class BluetoothServiceManager {
     return connectedDevice;
   }
 
-  Future<BluetoothService> getService(
-    BluetoothDevice device,
-  ) async {
+  Future<BluetoothService> getService({
+    required BluetoothDevice device,
+  }) async {
     List<BluetoothService> services = await device.discoverServices();
     return services.firstWhere(
       (s) =>
@@ -36,10 +36,10 @@ class BluetoothServiceManager {
     );
   }
 
-  Future<BluetoothCharacteristic> getCharacteristic(
-    BluetoothService service,
-    int characteristicIndex,
-  ) async {
+  Future<BluetoothCharacteristic> getCharacteristic({
+    required BluetoothService service,
+    required int characteristicIndex,
+  }) async {
     return service.characteristics.firstWhere(
       (c) =>
           c.uuid.toString().toUpperCase() ==
@@ -50,12 +50,12 @@ class BluetoothServiceManager {
     );
   }
 
-  Future<void> writeAndNotify(
-    BluetoothCharacteristic writeCharacteristic,
-    BluetoothCharacteristic notifyCharacteristic,
-    List<int> message,
-    Function(List<int>) onResponse,
-  ) async {
+  Future<void> writeAndNotify({
+    required BluetoothCharacteristic writeCharacteristic,
+    required BluetoothCharacteristic notifyCharacteristic,
+    required List<int> message,
+    required Function(List<int>) onResponse,
+  }) async {
     await writeCharacteristic.write(
       message,
     );

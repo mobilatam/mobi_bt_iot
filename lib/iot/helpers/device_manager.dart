@@ -4,7 +4,7 @@ import 'package:mobi_bt_iot/bluetooth/bluetooth_helper.dart';
 import 'package:mobi_bt_iot/iot/config/device_config.dart';
 import 'package:mobi_bt_iot/iot/interfaces/device_manager_interface.dart';
 import 'package:mobi_bt_iot/iot/utils/ble_utils.dart';
-import 'package:mobi_bt_iot/iot/helpers/bluetooth_device_manager.dart';
+import 'package:mobi_bt_iot/bluetooth/helper/bluetooth_device_manager.dart';
 import 'package:mobi_bt_iot/iot/utils/scooter_utils.dart';
 
 class DeviceManager implements DeviceManagerInterface {
@@ -43,32 +43,38 @@ class DeviceManager implements DeviceManagerInterface {
     required String deviceKey,
   }) async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
-    BluetoothService service = await bluetoothServiceManager.getService(
-      connectedDevice,
-    );
-    BluetoothCharacteristic notifyCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      1,
-    );
-    BluetoothCharacteristic writeCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      2,
-    );
 
     List<int> sendMessage = ScooterCommandUtil.getCRCCommunicationKey(
       deviceUniqueKey: DeviceConfig().getDeviceUniqueKey(),
     );
+
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
     await bluetoothServiceManager.writeAndNotify(
-        writeCharacteristic, notifyCharacteristic, sendMessage, (
-      responseBleDevice,
-    ) async {
-      await processReceivedValues(
-        dataListValues: responseBleDevice,
-        isInfo: false,
-      );
-    });
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
+        responseBleDevice,
+      ) async {
+        await processReceivedValues(
+          dataListValues: responseBleDevice,
+          isInfo: false,
+        );
+      },
+    );
   }
 
   @override
@@ -76,40 +82,44 @@ class DeviceManager implements DeviceManagerInterface {
     required int ckey,
   }) async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
-    BluetoothService service = await bluetoothServiceManager.getService(
-      connectedDevice,
-    );
-    BluetoothCharacteristic notifyCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      1,
-    );
-    BluetoothCharacteristic writeCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      2,
-    );
-
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterInfo(
       ckey: ckey,
     );
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
     await bluetoothServiceManager.writeAndNotify(
-        writeCharacteristic, notifyCharacteristic, sendMessage, (
-      responseBleDevice,
-    ) async {
-      Uint8List? processedValues = await processReceivedValues(
-        dataListValues: responseBleDevice,
-        isInfo: true,
-      );
-      if (processedValues != null) {
-        List<int> info = onHandInfo(
-          responseDevice: processedValues,
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
+        responseBleDevice,
+      ) async {
+        Uint8List? processedValues = await processReceivedValues(
+          dataListValues: responseBleDevice,
+          isInfo: true,
         );
-        deviceConfig.setDeviceInfo(
-          responseDeviceInfo: info,
-        );
-      }
-    });
+        if (processedValues != null) {
+          List<int> info = onHandInfo(
+            responseDevice: processedValues,
+          );
+          deviceConfig.setDeviceInfo(
+            responseDeviceInfo: info,
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -117,30 +127,32 @@ class DeviceManager implements DeviceManagerInterface {
     required int ckey,
   }) async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
-    BluetoothService service = await bluetoothServiceManager.getService(
-      connectedDevice,
-    );
-    BluetoothCharacteristic notifyCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      1,
-    );
-    BluetoothCharacteristic writeCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      2,
-    );
 
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterClose(
       ckey: ckey,
     );
+
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
     await bluetoothServiceManager.writeAndNotify(
-      writeCharacteristic,
-      notifyCharacteristic,
-      sendMessage,
-      (
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
         responseBleDevice,
-      ) {},
+      ) async {},
     );
   }
 
@@ -149,20 +161,6 @@ class DeviceManager implements DeviceManagerInterface {
     required int ckey,
   }) async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
-    BluetoothService service = await bluetoothServiceManager.getService(
-      connectedDevice,
-    );
-    BluetoothCharacteristic notifyCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      1,
-    );
-    BluetoothCharacteristic writeCharacteristic =
-        await bluetoothServiceManager.getCharacteristic(
-      service,
-      2,
-    );
-
     int uid = 0;
     int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterOpen(
@@ -171,13 +169,27 @@ class DeviceManager implements DeviceManagerInterface {
       uid: uid,
       timestamp: timestamp,
     );
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
     await bluetoothServiceManager.writeAndNotify(
-      writeCharacteristic,
-      notifyCharacteristic,
-      sendMessage,
-      (
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
         responseBleDevice,
-      ) {},
+      ) async {},
     );
   }
 }
