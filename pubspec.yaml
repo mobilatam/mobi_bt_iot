@@ -1,25 +1,17 @@
 name: mobi_bt_iot
-description: "A new Flutter package project."
+description: 'A new Flutter package project.'
 version: 0.0.1
 homepage:
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
-  flutter: ">=1.17.0"
+  flutter: '>=1.17.0'
 
 dependencies:
   dart_code_metrics: ^5.7.6
   flutter:
     sdk: flutter
-  flutter_blue:
-    git:
-      url: https://github.com/pauldemarco/flutter_blue.git
-  flutter_secure_storage: ^9.0.0
-  #url: https://github.com/boskokg/flutter_blue/
-  #ref: 0.11.0
-  #ref: 0.8.0
-
-
+  flutter_blue_plus: 1.31.4
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +23,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
 # To add assets to your package, add an assets section, like this:
 # assets:
 #   - images/a_dot_burr.jpeg

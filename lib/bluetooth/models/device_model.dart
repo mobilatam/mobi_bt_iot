@@ -1,11 +1,11 @@
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
 import 'package:mobi_bt_iot/bluetooth/entities/device_entity.dart';
 
 class DeviceModel extends DeviceEntity {
   DeviceModel({
     required super.name,
     required super.address,
-    required super.type,
     super.connectState,
   });
 
@@ -13,7 +13,6 @@ class DeviceModel extends DeviceEntity {
     return {
       'name': name,
       'address': address,
-      'type': type,
     };
   }
 
@@ -23,7 +22,6 @@ class DeviceModel extends DeviceEntity {
     return DeviceModel(
       name: json['name'] ?? '',
       address: json['address'] ?? '',
-      type: json['type'] ?? 0,
     );
   }
 
@@ -31,9 +29,8 @@ class DeviceModel extends DeviceEntity {
     BluetoothDevice device,
   ) {
     return DeviceModel(
-      name: device.name,
-      address: device.id.toString(),
-      type: device.type.index,
+      name: device.platformName,
+      address: device.remoteId.toString(),
       connectState: device,
     );
   }
