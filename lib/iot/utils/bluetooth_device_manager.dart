@@ -1,0 +1,77 @@
+import 'dart:async';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:mobi_bt_iot/bluetooth/bluetooth_helper.dart';
+import 'package:mobi_bt_iot/device_config.dart';
+import 'package:mobi_bt_iot/iot/utils/custom_exception.dart';
+
+class BluetoothServiceManager {
+  BluetoothServiceManager({
+    required this.bluetoothHelper,
+  });
+
+  final BluetoothHelper bluetoothHelper;
+  final DeviceConfig deviceConfig = DeviceConfig();
+  StreamSubscription? _notifySubscription;
+
+  Future<BluetoothDevice> getConnectedDevice() async {
+    var connectedDevice = bluetoothHelper.getConnectedDevice();
+    if (connectedDevice == null) {
+      throw Exception(
+        CustomException,
+      );
+    }
+    return connectedDevice;
+  }
+
+  Future<BluetoothService> getService(
+    BluetoothDevice device,
+  ) async {
+    List<BluetoothService> services = await device.discoverServices();
+    return services.firstWhere(
+      (s) =>
+          s.uuid.toString().toUpperCase() == deviceConfig.getDeviceListUid()[0],
+      orElse: () => throw Exception(
+        CustomException,
+      ),
+    );
+  }
+
+  Future<BluetoothCharacteristic> getCharacteristic(
+    BluetoothService service,
+    int characteristicIndex,
+  ) async {
+    return service.characteristics.firstWhere(
+      (c) =>
+          c.uuid.toString().toUpperCase() ==
+          deviceConfig.getDeviceListUid()[characteristicIndex],
+      orElse: () => throw Exception(
+        CustomException,
+      ),
+    );
+  }
+
+  Future<void> writeAndNotify(
+    BluetoothCharacteristic writeCharacteristic,
+    BluetoothCharacteristic notifyCharacteristic,
+    List<int> message,
+    Function(List<int>) onResponse,
+  ) async {
+    await writeCharacteristic.write(
+      message,
+    );
+    await notifyCharacteristic.setNotifyValue(
+      true,
+    );
+    _unsubscribeNotify();
+    _notifySubscription = notifyCharacteristic.value.listen((
+      responseBleDevice,
+    ) {
+      onResponse(responseBleDevice);
+    });
+  }
+
+  void _unsubscribeNotify() {
+    _notifySubscription?.cancel();
+    _notifySubscription = null;
+  }
+}
