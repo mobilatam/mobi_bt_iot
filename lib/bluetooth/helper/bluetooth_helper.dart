@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:mobi_bt_iot/bluetooth/bluetooth_interface.dart';
+import 'package:mobi_bt_iot/bluetooth/interface/bluetooth_interface.dart';
 import 'package:mobi_bt_iot/bluetooth/models/device_model.dart';
 import 'package:mobi_bt_iot/bluetooth/models/service_model.dart';
 

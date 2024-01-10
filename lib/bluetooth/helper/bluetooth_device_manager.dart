@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:mobi_bt_iot/bluetooth/bluetooth_helper.dart';
+import 'package:mobi_bt_iot/bluetooth/helper/bluetooth_helper.dart';
 import 'package:mobi_bt_iot/iot/config/device_config.dart';
 import 'package:mobi_bt_iot/iot/utils/custom_exception.dart';
 
