@@ -8,6 +8,8 @@ class DeviceConfig {
   DeviceConfig._internal();
 
   String deviceMac = '';
+
+  ///Todo: Hashing deviceUniqueKey or coming from environment variable
   String deviceUniqueKey = 'yOTmK50z';
   int deviceCkey = 0;
   List<int> deviceInfo = [];
