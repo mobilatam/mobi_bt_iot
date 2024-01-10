@@ -3,15 +3,17 @@ abstract class DeviceManagerInterface {
     required String deviceKey,
   });
 
-  Future<void> unlock({
+  Future<void> unlockDevice({
     required int ckey,
   });
 
-  Future<void> lock({
+  Future<void> lockDevice({
     required int ckey,
   });
 
-  Future<void> info({
+  Future<void> infoDevice({
     required int ckey,
   });
+
+  Future<void> getUuidCommunication();
 }
