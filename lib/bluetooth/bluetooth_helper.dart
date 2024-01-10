@@ -6,7 +6,12 @@ import 'package:mobi_bt_iot/bluetooth/models/device_model.dart';
 import 'package:mobi_bt_iot/bluetooth/models/service_model.dart';
 
 class BluetoothHelper implements BluetoothDeviceInterface {
+  factory BluetoothHelper() {
+    return _instance;
+  }
+
   static final BluetoothHelper _instance = BluetoothHelper._internal();
+
   final _discoveredDevicesStreamController =
       StreamController<List<DeviceModel>>.broadcast();
   final _servicesStreamController =
@@ -15,10 +20,6 @@ class BluetoothHelper implements BluetoothDeviceInterface {
 
   BluetoothDevice? _connectedDevice;
 
-  factory BluetoothHelper() {
-    return _instance;
-  }
-
   BluetoothHelper._internal();
 
   @override
@@ -26,14 +27,17 @@ class BluetoothHelper implements BluetoothDeviceInterface {
     required String address,
   }) async {
     DeviceModel? targetDevice = _discoveredDevices.firstWhere(
-      (d) => d.address == address,
+      (
+        d,
+      ) =>
+          d.address == address,
     );
 
     try {
       await targetDevice.connectState!.connect();
       _connectedDevice = targetDevice.connectState;
-    } catch (e) {
-      (e);
+    } catch (error) {
+      (error);
     }
   }
 
@@ -48,7 +52,9 @@ class BluetoothHelper implements BluetoothDeviceInterface {
     await device.disconnect();
     if (_connectedDevice?.remoteId.toString() == address) {
       _connectedDevice = null;
-      _servicesStreamController.add([]);
+      _servicesStreamController.add(
+        [],
+      );
     }
   }
 
@@ -81,12 +87,19 @@ class BluetoothHelper implements BluetoothDeviceInterface {
 
   Stream<List<ServiceModel>> getConnectedDeviceServices() {
     if (_connectedDevice == null) {
-      return Stream.value([]);
+      return Stream.value(
+        [],
+      );
     } else {
-      return _connectedDevice!.discoverServices().then((services) {
+      return _connectedDevice!.discoverServices().then((
+        services,
+      ) {
         return services
             .map(
-              (service) => ServiceModel.fromBluetoothService(
+              (
+                service,
+              ) =>
+                  ServiceModel.fromBluetoothService(
                 service,
               ),
             )
@@ -98,20 +111,31 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   @override
   Stream<List<ServiceModel>> getDeviceServices() {
     if (_connectedDevice == null) {
-      _servicesStreamController.add([]);
+      _servicesStreamController.add(
+        [],
+      );
     } else {
-      _connectedDevice!.discoverServices().then((services) {
+      _connectedDevice!.discoverServices().then((
+        services,
+      ) {
         _servicesStreamController.add(
           services
               .map(
-                (service) => ServiceModel.fromBluetoothService(
+                (
+                  service,
+                ) =>
+                    ServiceModel.fromBluetoothService(
                   service,
                 ),
               )
               .toList(),
         );
-      }).catchError((error) {
-        _servicesStreamController.addError(error);
+      }).catchError((
+        error,
+      ) {
+        _servicesStreamController.addError(
+          error,
+        );
       });
     }
 
@@ -126,7 +150,9 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   Future<void> startScan() async {
     _discoveredDevices.clear();
     FlutterBluePlus.startScan();
-    FlutterBluePlus.scanResults.listen((results) {
+    FlutterBluePlus.scanResults.listen((
+      results,
+    ) {
       _discoveredDevices = results
           .map(
             (r) => DeviceModel.fromBluetoothDevice(
