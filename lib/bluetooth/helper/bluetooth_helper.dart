@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:mobi_bt_iot/bluetooth/interface/bluetooth_interface.dart';
@@ -67,14 +68,13 @@ class BluetoothHelper implements BluetoothDeviceInterface {
     String serviceUuid,
   ) async {
     if (_connectedDevice == null) {
-      throw Exception();
+      log('No connected device');
     }
 
     List<BluetoothService> services =
         await _connectedDevice!.discoverServices();
     BluetoothService service = services.firstWhere(
       (s) => s.uuid.toString().toUpperCase() == serviceUuid.toUpperCase(),
-      orElse: () => throw Exception(),
     );
 
     return service.characteristics;

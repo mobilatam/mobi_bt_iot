@@ -19,7 +19,7 @@ class DeviceManager implements DeviceManagerInterface {
   @override
   Future<void> getUuidCommunication() async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
-    List<BluetoothService> services = await connectedDevice.discoverServices();
+    List<BluetoothService> services = await connectedDevice!.discoverServices();
     String uuid = services[2].uuid.toString().toUpperCase();
     String notify =
         services[2].characteristics[0].uuid.toString().toUpperCase();
@@ -150,7 +150,12 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        await processReceivedValues(
+          dataListValues: responseBleDevice,
+          isInfo: false,
+        );
+      },
     );
   }
 
@@ -187,7 +192,12 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        await processReceivedValues(
+          dataListValues: responseBleDevice,
+          isInfo: false,
+        );
+      },
     );
   }
 }

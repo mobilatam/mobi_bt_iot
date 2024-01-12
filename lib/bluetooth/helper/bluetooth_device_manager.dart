@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:mobi_bt_iot/bluetooth/helper/bluetooth_helper.dart';
 import 'package:mobi_bt_iot/iot/config/device_config.dart';
-import 'package:mobi_bt_iot/iot/utils/custom_exception.dart';
 
 class BluetoothServiceManager {
   BluetoothServiceManager({
@@ -14,26 +14,21 @@ class BluetoothServiceManager {
   final DeviceConfig deviceConfig = DeviceConfig();
   StreamSubscription? _notifySubscription;
 
-  Future<BluetoothDevice> getConnectedDevice() async {
+  Future<BluetoothDevice?> getConnectedDevice() async {
     var connectedDevice = bluetoothHelper.getConnectedDevice();
     if (connectedDevice == null) {
-      throw Exception(
-        CustomException,
-      );
+      log('No connected device');
     }
     return connectedDevice;
   }
 
   Future<BluetoothService> getService({
-    required BluetoothDevice device,
+    required BluetoothDevice? device,
   }) async {
-    List<BluetoothService> services = await device.discoverServices();
+    List<BluetoothService> services = await device!.discoverServices();
     return services.firstWhere(
       (s) =>
           s.uuid.toString().toUpperCase() == deviceConfig.getDeviceListUid()[0],
-      orElse: () => throw Exception(
-        CustomException,
-      ),
     );
   }
 
@@ -45,9 +40,6 @@ class BluetoothServiceManager {
       (c) =>
           c.uuid.toString().toUpperCase() ==
           deviceConfig.getDeviceListUid()[characteristicIndex],
-      orElse: () => throw Exception(
-        CustomException,
-      ),
     );
   }
 
