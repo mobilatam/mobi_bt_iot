@@ -118,6 +118,49 @@ class DeviceManager implements DeviceManagerInterface {
   }
 
   @override
+  Future<void> lockInfo({
+    required int ckey,
+  }) async {
+    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+    List<int> sendMessage = ScooterCommandUtil.getCRCScooterIotInfo(
+      ckey: ckey,
+    );
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
+    await bluetoothServiceManager.writeAndNotify(
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
+        responseBleDevice,
+      ) async {
+        Uint8List? processedValues = await processReceivedValues(
+          dataListValues: responseBleDevice,
+          isInfo: true,
+        );
+
+        if (processedValues != null) {
+          deviceConfig.setLockStatus(
+            newLockStatus: processedValues,
+          );
+        }
+      },
+    );
+  }
+
+  @override
   Future<void> lockDevice({
     required int ckey,
   }) async {
