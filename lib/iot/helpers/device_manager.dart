@@ -106,11 +106,8 @@ class DeviceManager implements DeviceManagerInterface {
           isInfo: true,
         );
         if (processedValues != null) {
-          List<int> info = onHandInfo(
-            responseDevice: processedValues,
-          );
           deviceConfig.setDeviceInfo(
-            responseDeviceInfo: info,
+            responseDeviceInfo: processedValues,
           );
         }
       },
