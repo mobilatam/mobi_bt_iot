@@ -15,5 +15,9 @@ abstract class DeviceManagerInterface {
     required int ckey,
   });
 
+  Future<void> lockInfo({
+    required int ckey,
+  });
+
   Future<void> getUuidCommunication();
 }
