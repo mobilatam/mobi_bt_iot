@@ -18,6 +18,7 @@ class DeviceConfig {
 
   bool isLightOn = true;
   bool isScooterUnlock = true;
+  int selectedVelocity = 3;
 
   String getDeviceMac() {
     return deviceMac;
@@ -97,5 +98,15 @@ class DeviceConfig {
     required bool newIsScooterUnlock,
   }) {
     isScooterUnlock = newIsScooterUnlock;
+  }
+
+  int getSelectedVelocity() {
+    return selectedVelocity;
+  }
+
+  void setSelectedVelocity({
+    required int newSelectedVelocity,
+  }) {
+    selectedVelocity = newSelectedVelocity;
   }
 }
