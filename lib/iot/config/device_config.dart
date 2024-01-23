@@ -17,6 +17,7 @@ class DeviceConfig {
   int deviceLockStatus = 0;
 
   bool isLightOn = true;
+  bool isScooterUnlock = true;
 
   String getDeviceMac() {
     return deviceMac;
@@ -76,5 +77,25 @@ class DeviceConfig {
     required int newDeviceLockStatus,
   }) {
     deviceLockStatus = newDeviceLockStatus;
+  }
+
+  bool getIsLightOn() {
+    return isLightOn;
+  }
+
+  void setIsLightOn({
+    required bool newIsLightOn,
+  }) {
+    isLightOn = newIsLightOn;
+  }
+
+  bool getIsScooterUnlock() {
+    return isScooterUnlock;
+  }
+
+  void setIsScooterUnlock({
+    required bool newIsScooterUnlock,
+  }) {
+    isScooterUnlock = newIsScooterUnlock;
   }
 }

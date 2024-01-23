@@ -61,6 +61,62 @@ Future<Uint8List?> processReceivedValues({
   }
 }
 
+Future<Uint8List?> processReceivedValuesUnlock({
+  required List<int> dataListValues,
+  required bool isInfo,
+}) async {
+  int start = 0;
+  int copyLen = 0;
+
+  for (int i = 0; i < dataListValues.length; i++) {
+    if ((dataListValues[i] & 0xFF) == 0xA3 &&
+        (dataListValues[i + 1] & 0xFF) == 0xA4) {
+      start = i;
+      int len = dataListValues[i + 2];
+      copyLen = len + 7;
+      break;
+    }
+  }
+
+  if (copyLen == 0) return null;
+
+  Uint8List real = Uint8List.fromList(
+    dataListValues.sublist(
+      start,
+      start + copyLen,
+    ),
+  );
+  Uint8List responseMessage = Uint8List.fromList(
+    real.sublist(
+      0,
+      real.length - 1,
+    ),
+  );
+  int crc8 = CRCUtil.calcCRC8(
+    dataList: responseMessage,
+  );
+
+  int vCrc = real.last & 0xFF;
+
+  if (crc8 == vCrc) {
+    int rand = real[3] - 0x32;
+    responseMessage[3] = rand;
+    for (int i = 4; i < responseMessage.length; i++) {
+      responseMessage[i] = (responseMessage[i] ^ rand) & 0xFF;
+    }
+
+    if (isInfo == false) {
+      onHandNotifyCommand(
+        handleResponse: responseMessage,
+      );
+    }
+
+    return responseMessage;
+  } else {
+    return null;
+  }
+}
+
 Future<void> onHandNotifyCommand({
   required Uint8List handleResponse,
 }) async {
@@ -116,6 +172,9 @@ List<int> onHandInfo({
   int speed = ((responseDevice[8] & 0xFF) << 8) | (responseDevice[9] & 0xFF);
   int mileage =
       ((responseDevice[10] & 0xFF) << 8) | (responseDevice[11] & 0xFF);
+
+  if (responseDevice.length < 14) return [power, mode, speed, mileage, 0];
+
   int prescientMileage =
       ((responseDevice[12] & 0xFF) << 8) | (responseDevice[13] & 0xFF);
 

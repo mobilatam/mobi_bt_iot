@@ -107,11 +107,15 @@ class DeviceManager implements DeviceManagerInterface {
           isInfo: true,
         );
         if (processedValues != null) {
-          deviceConfig.setDeviceInfo(
-            responseDeviceInfo: processedValues,
+          List<int> infoHanded = onHandInfo(
+            responseDevice: processedValues,
           );
+
+          deviceConfig.setDeviceInfo(
+            responseDeviceInfo: infoHanded,
+          );
+          return;
         }
-        return;
       },
     );
   }
@@ -145,7 +149,7 @@ class DeviceManager implements DeviceManagerInterface {
       onResponse: (
         responseBleDevice,
       ) async {
-        Uint8List? processedValues = await processReceivedValues(
+        Uint8List? processedValues = await processReceivedValuesUnlock(
           dataListValues: responseBleDevice,
           isInfo: true,
         );
@@ -154,8 +158,8 @@ class DeviceManager implements DeviceManagerInterface {
           deviceConfig.setDeviceLockStatus(
             newDeviceLockStatus: processedValues[8],
           );
+          return;
         }
-        return;
       },
     );
   }
