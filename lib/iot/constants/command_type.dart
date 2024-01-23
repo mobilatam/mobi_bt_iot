@@ -9,4 +9,5 @@ class CommandType {
   static const int scooterOldData = 0x51;
   static const int scooterClose = 0x15;
   static const int scooterOpen = 0x05;
+  static const int setScooter = 0x61;
 }

@@ -163,6 +163,27 @@ class ScooterCommandUtil extends BaseCommand {
     );
   }
 
+  static List<int> setScooter({
+    required int ckey,
+    required int velocity,
+    required int headLight,
+  }) {
+    List<int> data = [
+      headLight,
+      velocity,
+      0x00,
+      0x00,
+    ];
+    List<int> commandMessage = getCommand(
+      ckey: ckey,
+      commandType: CommandType.setScooter,
+      dataList: data,
+    );
+    return getXorCRCCommand(
+      dataCommand: commandMessage,
+    );
+  }
+
   static List<int> getCRCGetOldData({required int cKey}) {
     List<int> data = [0x01];
     List<int> commandMessage = getCommand(

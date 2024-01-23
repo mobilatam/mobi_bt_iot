@@ -19,5 +19,11 @@ abstract class DeviceManagerInterface {
     required int ckey,
   });
 
+  Future<void> setScooter({
+    required int ckey,
+    required int velocity,
+    required int headLight,
+  });
+
   Future<void> getUuidCommunication();
 }

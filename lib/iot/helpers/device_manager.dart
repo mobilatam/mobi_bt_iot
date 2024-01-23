@@ -68,6 +68,7 @@ class DeviceManager implements DeviceManagerInterface {
           dataListValues: responseBleDevice,
           isInfo: false,
         );
+        return;
       },
     );
   }
@@ -110,6 +111,7 @@ class DeviceManager implements DeviceManagerInterface {
             responseDeviceInfo: processedValues,
           );
         }
+        return;
       },
     );
   }
@@ -149,10 +151,11 @@ class DeviceManager implements DeviceManagerInterface {
         );
 
         if (processedValues != null) {
-          deviceConfig.setLockStatus(
-            newLockStatus: processedValues,
+          deviceConfig.setDeviceLockStatus(
+            newDeviceLockStatus: processedValues[8],
           );
         }
+        return;
       },
     );
   }
@@ -187,7 +190,9 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        return;
+      },
     );
   }
 
@@ -224,7 +229,48 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        return;
+      },
+    );
+  }
+
+  @override
+  Future<void> setScooter({
+    required int ckey,
+    required int velocity,
+    required int headLight,
+  }) async {
+    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+
+    List<int> sendMessage = ScooterCommandUtil.setScooter(
+      ckey: ckey,
+      velocity: velocity,
+      headLight: headLight,
+    );
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
+    await bluetoothServiceManager.writeAndNotify(
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
+        responseBleDevice,
+      ) async {
+        return;
+      },
     );
   }
 }

@@ -14,7 +14,9 @@ class DeviceConfig {
   int deviceCkey = 0;
   List<int> deviceInfo = [];
   List<String> deviceListUid = [];
-  List<int> lockStatus = [];
+  int deviceLockStatus = 0;
+
+  bool isLightOn = true;
 
   String getDeviceMac() {
     return deviceMac;
@@ -66,13 +68,13 @@ class DeviceConfig {
     deviceListUid = newDeviceListUid;
   }
 
-  List<int> getLockStatus() {
-    return lockStatus;
+  int getDeviceLockStatus() {
+    return deviceLockStatus;
   }
 
-  void setLockStatus({
-    required List<int> newLockStatus,
+  void setDeviceLockStatus({
+    required int newDeviceLockStatus,
   }) {
-    lockStatus = newLockStatus;
+    deviceLockStatus = newDeviceLockStatus;
   }
 }
