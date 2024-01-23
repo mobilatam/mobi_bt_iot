@@ -14,9 +14,7 @@ class BluetoothServiceManager {
   Future<BluetoothDevice> getConnectedDevice() async {
     var connectedDevice = bluetoothHelper.getConnectedDevice();
     if (connectedDevice == null) {
-      throw Exception(
-        CustomException,
-      );
+      throw BluetoothException('No connected device found');
     }
     return connectedDevice;
   }
@@ -28,9 +26,7 @@ class BluetoothServiceManager {
     return services.firstWhere(
       (s) =>
           s.uuid.toString().toUpperCase() == deviceConfig.getDeviceListUid()[0],
-      orElse: () => throw Exception(
-        CustomException,
-      ),
+      orElse: () => throw BluetoothException('Service not found'),
     );
   }
 
@@ -42,9 +38,7 @@ class BluetoothServiceManager {
       (c) =>
           c.uuid.toString().toUpperCase() ==
           deviceConfig.getDeviceListUid()[characteristicIndex],
-      orElse: () => throw Exception(
-        CustomException,
-      ),
+      orElse: () => throw BluetoothException('Characteristic not found'),
     );
   }
 
@@ -54,22 +48,32 @@ class BluetoothServiceManager {
     required List<int> message,
     required Function(List<int>) onResponse,
   }) async {
-    await writeCharacteristic.write(
-      message,
-    );
-    await notifyCharacteristic.setNotifyValue(
-      true,
-    );
-    _unsubscribeNotify();
+    await writeCharacteristic.write(message);
+    await notifyCharacteristic.setNotifyValue(true);
+    await _unsubscribeNotify();
     _notifySubscription = notifyCharacteristic.lastValueStream.listen((
       responseBleDevice,
     ) {
-      onResponse(responseBleDevice);
+      onResponse(
+        responseBleDevice,
+      );
     });
   }
 
-  void _unsubscribeNotify() {
-    _notifySubscription?.cancel();
-    _notifySubscription = null;
+  Future<void> _unsubscribeNotify() async {
+    if (_notifySubscription != null) {
+      await _notifySubscription!.cancel();
+      _notifySubscription = null;
+    }
+  }
+}
+
+class BluetoothException implements Exception {
+  String message;
+  BluetoothException(this.message);
+
+  @override
+  String toString() {
+    return "BluetoothException: $message";
   }
 }

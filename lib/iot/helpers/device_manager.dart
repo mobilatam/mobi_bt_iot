@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:mobi_bt_iot/mobi_bt_iot.dart';
 
 class DeviceManager implements DeviceManagerInterface {
@@ -66,8 +64,11 @@ class DeviceManager implements DeviceManagerInterface {
       ) async {
         await processReceivedValues(
           dataListValues: responseBleDevice,
-          isInfo: false,
+          ckey: true,
+          info: false,
+          lock: false,
         );
+        return;
       },
     );
   }
@@ -101,15 +102,13 @@ class DeviceManager implements DeviceManagerInterface {
       onResponse: (
         responseBleDevice,
       ) async {
-        Uint8List? processedValues = await processReceivedValues(
+        await processReceivedValues(
           dataListValues: responseBleDevice,
-          isInfo: true,
+          ckey: false,
+          info: true,
+          lock: false,
         );
-        if (processedValues != null) {
-          deviceConfig.setDeviceInfo(
-            responseDeviceInfo: processedValues,
-          );
-        }
+        return;
       },
     );
   }
@@ -143,16 +142,13 @@ class DeviceManager implements DeviceManagerInterface {
       onResponse: (
         responseBleDevice,
       ) async {
-        Uint8List? processedValues = await processReceivedValues(
+        await processReceivedValuesUnlock(
           dataListValues: responseBleDevice,
-          isInfo: true,
+          ckey: false,
+          info: false,
+          lock: true,
         );
-
-        if (processedValues != null) {
-          deviceConfig.setLockStatus(
-            newLockStatus: processedValues,
-          );
-        }
+        return;
       },
     );
   }
@@ -187,7 +183,9 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        return;
+      },
     );
   }
 
@@ -224,7 +222,48 @@ class DeviceManager implements DeviceManagerInterface {
       message: sendMessage,
       onResponse: (
         responseBleDevice,
-      ) async {},
+      ) async {
+        return;
+      },
+    );
+  }
+
+  @override
+  Future<void> setScooter({
+    required int ckey,
+    required int velocity,
+    required int headLight,
+  }) async {
+    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+
+    List<int> sendMessage = ScooterCommandUtil.setScooter(
+      ckey: ckey,
+      velocity: velocity,
+      headLight: headLight,
+    );
+    BluetoothService service = await bluetoothServiceManager.getService(
+      device: connectedDevice,
+    );
+    BluetoothCharacteristic notifyCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 1,
+    );
+    BluetoothCharacteristic writeCharacteristic =
+        await bluetoothServiceManager.getCharacteristic(
+      service: service,
+      characteristicIndex: 2,
+    );
+
+    await bluetoothServiceManager.writeAndNotify(
+      writeCharacteristic: writeCharacteristic,
+      notifyCharacteristic: notifyCharacteristic,
+      message: sendMessage,
+      onResponse: (
+        responseBleDevice,
+      ) async {
+        return;
+      },
     );
   }
 }
