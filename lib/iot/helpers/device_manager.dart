@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:mobi_bt_iot/mobi_bt_iot.dart';
 
 class DeviceManager implements DeviceManagerInterface {
@@ -66,7 +64,9 @@ class DeviceManager implements DeviceManagerInterface {
       ) async {
         await processReceivedValues(
           dataListValues: responseBleDevice,
-          isInfo: false,
+          ckey: true,
+          info: false,
+          lock: false,
         );
         return;
       },
@@ -102,20 +102,13 @@ class DeviceManager implements DeviceManagerInterface {
       onResponse: (
         responseBleDevice,
       ) async {
-        Uint8List? processedValues = await processReceivedValues(
+        await processReceivedValues(
           dataListValues: responseBleDevice,
-          isInfo: true,
+          ckey: false,
+          info: true,
+          lock: false,
         );
-        if (processedValues != null) {
-          List<int> infoHanded = onHandInfo(
-            responseDevice: processedValues,
-          );
-
-          deviceConfig.setDeviceInfo(
-            responseDeviceInfo: infoHanded,
-          );
-          return;
-        }
+        return;
       },
     );
   }
@@ -149,17 +142,13 @@ class DeviceManager implements DeviceManagerInterface {
       onResponse: (
         responseBleDevice,
       ) async {
-        Uint8List? processedValues = await processReceivedValuesUnlock(
+        await processReceivedValuesUnlock(
           dataListValues: responseBleDevice,
-          isInfo: true,
+          ckey: false,
+          info: false,
+          lock: true,
         );
-
-        if (processedValues != null) {
-          deviceConfig.setDeviceLockStatus(
-            newDeviceLockStatus: processedValues[8],
-          );
-          return;
-        }
+        return;
       },
     );
   }

@@ -7,7 +7,9 @@ import 'crc_util.dart';
 
 Future<Uint8List?> processReceivedValues({
   required List<int> dataListValues,
-  required bool isInfo,
+  required bool ckey,
+  required bool info,
+  required bool lock,
 }) async {
   int start = 0;
   int copyLen = 0;
@@ -49,10 +51,26 @@ Future<Uint8List?> processReceivedValues({
       responseMessage[i] = (responseMessage[i] ^ rand) & 0xFF;
     }
 
-    if (isInfo == false) {
+    if (ckey == true) {
       onHandNotifyCommand(
         handleResponse: responseMessage,
       );
+    }
+    if (info == true) {
+      List<int> infoHanded = onHandInfo(
+        responseDevice: responseMessage,
+      );
+      DeviceConfig().setDeviceInfo(
+        responseDeviceInfo: infoHanded,
+      );
+      return responseMessage;
+    }
+
+    if (lock == true) {
+      DeviceConfig().setDeviceLockStatus(
+        newDeviceLockStatus: responseMessage[8],
+      );
+      return responseMessage;
     }
 
     return responseMessage;
@@ -63,7 +81,9 @@ Future<Uint8List?> processReceivedValues({
 
 Future<Uint8List?> processReceivedValuesUnlock({
   required List<int> dataListValues,
-  required bool isInfo,
+  required bool ckey,
+  required bool info,
+  required bool lock,
 }) async {
   int start = 0;
   int copyLen = 0;
@@ -105,10 +125,26 @@ Future<Uint8List?> processReceivedValuesUnlock({
       responseMessage[i] = (responseMessage[i] ^ rand) & 0xFF;
     }
 
-    if (isInfo == false) {
+    if (ckey == true) {
       onHandNotifyCommand(
         handleResponse: responseMessage,
       );
+    }
+    if (info == true) {
+      List<int> infoHanded = onHandInfo(
+        responseDevice: responseMessage,
+      );
+      DeviceConfig().setDeviceInfo(
+        responseDeviceInfo: infoHanded,
+      );
+      return responseMessage;
+    }
+
+    if (lock == true) {
+      DeviceConfig().setDeviceLockStatus(
+        newDeviceLockStatus: responseMessage[8],
+      );
+      return responseMessage;
     }
 
     return responseMessage;
@@ -165,7 +201,7 @@ List<String> convertToHexWithPrefixUppercase({required List<int> dataIntList}) {
 }
 
 List<int> onHandInfo({
-  required Uint8List responseDevice,
+  required List<int> responseDevice,
 }) {
   int power = (responseDevice[6] & 0xFF);
   int mode = responseDevice[7] & 0xFF;
