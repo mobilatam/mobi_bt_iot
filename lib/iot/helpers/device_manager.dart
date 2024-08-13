@@ -15,11 +15,17 @@ class DeviceManager implements DeviceManagerInterface {
   Future<void> getUuidCommunication() async {
     var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
     List<BluetoothService> services = await connectedDevice.discoverServices();
-    String uuid = services[2].uuid.toString().toUpperCase();
-    String notify =
-        services[2].characteristics[0].uuid.toString().toUpperCase();
-    String write = services[2].characteristics[1].uuid.toString().toUpperCase();
+    // String uuid = services.last.uuid.toString().toUpperCase();
+    // String notify =
+    //     services.last.characteristics[1].uuid.toString().toUpperCase();
+    // String write = services.last.characteristics[0].uuid.toString().toUpperCase();
 
+    String uuid = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
+    String notify = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
+    String write = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
+    print('BLE -> uuid-> $uuid');
+    print('BLE -> notify-> $notify');
+    print('BLE -> write-> $write');
     if (uuid.isNotEmpty && notify.isNotEmpty && write.isNotEmpty) {
       deviceConfig.setDeviceListUid(
         newDeviceListUid: [
