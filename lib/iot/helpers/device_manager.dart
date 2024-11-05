@@ -167,7 +167,8 @@ class DeviceManager implements DeviceManagerInterface {
   Future<void> lockDevice({
     required int ckey,
   }) async {
-    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+    try {
+       var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
 
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterClose(
       ckey: ckey,
@@ -197,13 +198,19 @@ class DeviceManager implements DeviceManagerInterface {
         return;
       },
     );
+    } catch (e) {
+      print('Error lockDevice: $e');
+    
+    }
+   
   }
 
   @override
   Future<void> unlockDevice({
     required int ckey,
   }) async {
-    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+    try {
+      var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
     int uid = 0;
     int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterOpen(
@@ -236,6 +243,9 @@ class DeviceManager implements DeviceManagerInterface {
         return;
       },
     );
+    } catch (e) {
+      print('Error unlockDevice: $e');
+    } 
   }
 
   @override
