@@ -83,7 +83,8 @@ class DeviceManager implements DeviceManagerInterface {
   Future<void> infoDevice({
     required int ckey,
   }) async {
-    var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
+    try {
+      var connectedDevice = await bluetoothServiceManager.getConnectedDevice();
     List<int> sendMessage = ScooterCommandUtil.getCRCScooterInfo(
       ckey: ckey,
     );
@@ -117,6 +118,9 @@ class DeviceManager implements DeviceManagerInterface {
         return;
       },
     );
+    } catch (e) {
+      print('Error infoDevice: $e');
+    }
   }
 
   @override
