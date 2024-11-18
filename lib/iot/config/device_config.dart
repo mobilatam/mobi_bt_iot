@@ -10,7 +10,7 @@ class DeviceConfig {
   String deviceMac = '';
 
   ///Todo: Hashing deviceUniqueKey or coming from environment variable
-  String deviceUniqueKey = 'N30671r3';
+  String deviceUniqueKey = 'yOTmK50z';
   int deviceCkey = 0;
   List<int> deviceInfo = [];
   List<String> deviceListUid = [];
