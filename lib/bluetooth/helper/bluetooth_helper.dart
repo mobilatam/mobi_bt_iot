@@ -41,15 +41,8 @@ class BluetoothHelper implements BluetoothDeviceInterface {
   Future<void> disconectToDevice({
     required String address,
   }) async {
-    DeviceModel? targetDevice = _discoveredDevices.firstWhere(
-      (
-        d,
-      ) =>
-          d.address == address,
-    );
-
     try {
-      await targetDevice.connectState!.disconnect();
+      await _connectedDevice!.disconnect();
       _connectedDevice = null;
       _servicesStreamController.add(
         [],
