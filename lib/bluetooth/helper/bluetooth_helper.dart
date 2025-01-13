@@ -38,6 +38,27 @@ class BluetoothHelper implements BluetoothDeviceInterface {
     }
   }
 
+  Future<void> disconectToDevice({
+    required String address,
+  }) async {
+    DeviceModel? targetDevice = _discoveredDevices.firstWhere(
+      (
+        d,
+      ) =>
+          d.address == address,
+    );
+
+    try {
+      await targetDevice.connectState!.disconnect();
+      _connectedDevice = null;
+      _servicesStreamController.add(
+        [],
+      );
+    } catch (error) {
+      (error);
+    }
+  }
+
   @override
   Future<void> disconnectFromDevice({
     required String address,

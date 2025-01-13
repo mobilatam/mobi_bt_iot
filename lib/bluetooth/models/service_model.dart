@@ -46,7 +46,7 @@ class ServiceModel extends ServiceEntity {
   ) {
     return ServiceModel(
       uuid: service.uuid.toString(),
-      deviceId: service.deviceId.toString(),
+      deviceId: service.remoteId.toString(),
       isPrimary: service.isPrimary,
       characteristics: service.characteristics,
       includedServices: service.includedServices,
